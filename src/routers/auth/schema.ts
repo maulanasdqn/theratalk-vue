@@ -6,7 +6,7 @@ import {
   sameAs,
 } from "@vuelidate/validators";
 import useValidate from "@vuelidate/core";
-import { TLogin, TRegister } from "./type";
+import { TLoginRequest, TRegisterRequest } from "./type";
 
 const loginRules = {
   email: {
@@ -56,8 +56,8 @@ const registerRules = {
   },
 };
 
-export const useLoginValidate = (payload: TLogin) =>
+export const useLoginValidate = (payload: TLoginRequest) =>
   useValidate(loginRules, payload);
 
-export const useRegisterValidate = (payload: TRegister) =>
+export const useRegisterValidate = (payload: TRegisterRequest) =>
   useValidate(registerRules, payload);

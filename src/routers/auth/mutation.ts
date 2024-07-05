@@ -1,17 +1,33 @@
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, UseMutationReturnType } from "@tanstack/vue-query";
 import { authApi } from "./api";
-import { TLogin, TRegister } from "./type";
+import {
+  TLoginRequest,
+  TRegisterRequest,
+  TRegisterResponse,
+  TLoginResponse,
+} from "./type";
+import { TErrorResponse } from "../../utils/type";
 
-export const useLoginMutation = () => {
+export const useLoginMutation = (): UseMutationReturnType<
+  TLoginResponse,
+  TErrorResponse,
+  TLoginRequest,
+  unknown
+> => {
   return useMutation({
     mutationKey: ["post-login"],
-    mutationFn: async (data: TLogin) => await authApi.postLogin(data),
+    mutationFn: async (payload) => await authApi.postLogin(payload),
   });
 };
 
-export const useRegisterMutation = () => {
+export const useRegisterMutation = (): UseMutationReturnType<
+  TRegisterResponse,
+  TErrorResponse,
+  TRegisterRequest,
+  unknown
+> => {
   return useMutation({
     mutationKey: ["post-register"],
-    mutationFn: async (data: TRegister) => await authApi.postRegister(data),
+    mutationFn: async (payload) => await authApi.postRegister(payload),
   });
 };

@@ -8,7 +8,7 @@ const { form, isPending, onSubmit } = useRegisterForm()
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit"
+  <form novalidate @submit.prevent="onSubmit"
     class="w-full max-w-[594px] p-6 bg-white shadow-md h-auto rounded-xl flex flex-col gap-y-6 justify-center">
     <div class="flex flex-col">
       <h1 class="text-3xl font-bold">Register</h1>

@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
-import { formHelper } from "../../utils/form";
+import { formHelper } from "@/utils/form";
 import { useLoginMutation, useRegisterMutation } from "./mutation";
 import { useLoginValidate, useRegisterValidate } from "./schema";
+import { TLoginRequest, TRegisterRequest } from "./type";
 
 export const useLoginForm = defineStore("login", () => {
   const form = ref(
-    formHelper({
+    formHelper<TLoginRequest>({
       email: "",
       password: "",
     }),
@@ -38,7 +39,7 @@ export const useLoginForm = defineStore("login", () => {
 
 export const useRegisterForm = defineStore("register", () => {
   const form = ref(
-    formHelper({
+    formHelper<TRegisterRequest>({
       email: "",
       password: "",
       address: "",

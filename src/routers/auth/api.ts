@@ -1,10 +1,15 @@
-import { api } from "../../libs/axios";
-import { TLogin, TRegister } from "./type";
+import { api } from "@/libs/axios";
+import {
+  TLoginRequest,
+  TRegisterRequest,
+  TRegisterResponse,
+  TLoginResponse,
+} from "./type";
 
 export const authApi = {
-  postLogin: async (payload: TLogin) => {
+  postLogin: async (payload: TLoginRequest): Promise<TLoginResponse> => {
     try {
-      const { data } = await api({
+      const { data } = await api<TLoginResponse>({
         url: "/auth/login",
         method: "POST",
         data: {
@@ -18,9 +23,11 @@ export const authApi = {
     }
   },
 
-  postRegister: async (payload: TRegister) => {
+  postRegister: async (
+    payload: TRegisterRequest,
+  ): Promise<TRegisterResponse> => {
     try {
-      const { data } = await api({
+      const { data } = await api<TRegisterResponse>({
         url: "/auth/register",
         method: "POST",
         data: {
