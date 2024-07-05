@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
-import useValidate from "@vuelidate/core";
-import { required, email, minLength } from "@vuelidate/validators";
 import { formHelper } from "../../utils/form";
+import { useLoginMutation, useRegisterMutation } from "./mutation";
+import { useLoginValidate, useRegisterValidate } from "./schema";
 
-export const useLoginStore = defineStore("login", () => {
+export const useLoginForm = defineStore("login", () => {
   const form = ref(
     formHelper({
       email: "",
@@ -12,32 +12,10 @@ export const useLoginStore = defineStore("login", () => {
     }),
   );
 
-  const rules = {
-    email: {
-      email: {
-        ...email,
-        $message: "Email must be valid",
-      },
-      required: {
-        ...required,
-        $message: "Email is required",
-      },
-    },
-    password: {
-      minLength: {
-        ...minLength(8),
-        $message: "Password must be at least 8 characters",
-      },
-      required: {
-        ...required,
-        $message: "Password is required",
-      },
-    },
-  };
+  const validate = useLoginValidate(form.value);
+  const { mutate, isPending } = useLoginMutation();
 
-  const validate = useValidate(rules, form.value);
-
-  const subscribe = async () => {
+  const watchCallback = async () => {
     await validate.value.$validate();
     form.value.state.isValid = !validate.value.$invalid;
     form.value.state.isDirty = validate.value.$dirty;
@@ -47,20 +25,54 @@ export const useLoginStore = defineStore("login", () => {
       ?.$message as string;
   };
 
-  watch(form.value, subscribe);
+  watch(form.value, watchCallback, { deep: true });
 
-  const login = async () => {
-    await fetch("/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: form.value.email,
-        password: form.value.password,
-      }),
+  const onSubmit = () =>
+    mutate(form.value, {
+      onError: (e) => alert(e.message),
+      onSuccess: () => alert("Login successfully"),
     });
+
+  return { form, onSubmit, isPending };
+});
+
+export const useRegisterForm = defineStore("register", () => {
+  const form = ref(
+    formHelper({
+      email: "",
+      password: "",
+      address: "",
+      confirmPassword: "",
+      fullname: "",
+    }),
+  );
+
+  const validate = useRegisterValidate(form.value);
+  const { mutate, isPending } = useRegisterMutation();
+
+  const watchCallback = async () => {
+    await validate.value.$validate();
+    form.value.state.isValid = !validate.value.$invalid;
+    form.value.state.isDirty = validate.value.$dirty;
+    form.value.state.error.fullname = validate.value.fullname.$errors[0]
+      ?.$message as string;
+    form.value.state.error.address = validate.value.address.$errors[0]
+      ?.$message as string;
+    form.value.state.error.email = validate.value.email.$errors[0]
+      ?.$message as string;
+    form.value.state.error.password = validate.value.password.$errors[0]
+      ?.$message as string;
+    form.value.state.error.confirmPassword = validate.value.confirmPassword
+      .$errors[0]?.$message as string;
   };
 
-  return { form, login };
+  watch(form.value, watchCallback, { deep: true });
+
+  const onSubmit = () =>
+    mutate(form.value, {
+      onError: (e) => alert(e.message),
+      onSuccess: () => alert("Register successfully"),
+    });
+
+  return { form, onSubmit, isPending };
 });

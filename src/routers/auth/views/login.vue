@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import Input from '../../../components/ui/input.vue'
 import Button from '../../../components/ui/button.vue'
-import { useLoginStore } from '../store'
+import { useLoginForm } from '../store'
 
-const { form, login } = useLoginStore()
+const { form, isPending, onSubmit } = useLoginForm()
 
 </script>
 
 <template>
-  <form @submit.prevent="login"
+  <form @submit.prevent="onSubmit"
     class="w-full max-w-[594px] p-6 bg-white shadow-md h-auto rounded-xl flex flex-col gap-y-6 justify-center">
     <div class="flex flex-col">
       <h1 class="text-3xl font-bold">Login</h1>
@@ -23,7 +23,7 @@ const { form, login } = useLoginStore()
           Lupa kata sandi?
         </RouterLink>
       </div>
-      <Button :disabled="!form.state.isValid" class="w-full">Masuk</Button>
+      <Button :disabled="!form.state.isValid || isPending" class="w-full">Masuk</Button>
       <div class="w-full flex justify-center">
         <div class="text-xs sm:text-sm text-gray-500">
           Belum Mempunyai Akun?
